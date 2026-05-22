@@ -1,0 +1,40 @@
+# Virtual Environment
+.venv
+venv
+ENV
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+
+# Database
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Flask
+.webassets-cache
+
+# Vercel
+.vercel
+out
+dist
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
