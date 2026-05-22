@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | Ano, tara?</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="auth-page admin-auth-page">
+
+    <a href="/" class="auth-back">
+        Back
+    </a>
+
+    <section class="form-box auth-card admin-auth-card" aria-labelledby="admin-login-title">
+
+        <p class="auth-kicker">
+            Admin access
+        </p>
+
+        <h1 id="admin-login-title">
+            Admin Login
+        </h1>
+
+        <p class="auth-copy">
+            Sign in to review registered users and tourist spot bookings.
+        </p>
+
+        <form action="/login-admin" method="POST" class="auth-form">
+
+            <label for="admin_username">
+                Admin Username
+            </label>
+
+            <input id="admin_username"
+            type="text"
+            name="admin_username"
+            placeholder="Enter admin username"
+            autocomplete="username"
+            required>
+
+            <label for="admin_password">
+                Admin Password
+            </label>
+
+            <input id="admin_password"
+            type="password"
+            name="admin_password"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            required>
+
+            <button type="submit">
+                Log In
+            </button>
+
+        </form>
+
+        <p class="auth-copy" style="margin-top: 1rem;">
+            Need an admin account?
+
+            <a href="/admin-register">
+                Register
+            </a>
+        </p>
+
+    </section>
+
+</main>
+
+</body>
+</html>

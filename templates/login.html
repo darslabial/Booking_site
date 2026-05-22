@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Log In | Ready ka na?</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="auth-page">
+
+    <a href="/" class="auth-back">
+        Back
+    </a>
+
+    <section class="form-box auth-card" aria-labelledby="login-title">
+
+        <p class="auth-kicker">
+            Welcome back
+        </p>
+
+        <h1 id="login-title">
+            Ready ka na?
+        </h1>
+
+        <p class="auth-copy">
+            Log in to view tourist spots, book destinations, and manage your profile.
+        </p>
+
+        <form action="/login-user" method="POST" class="auth-form">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input id="username"
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required>
+
+            <label for="password">
+                Password
+            </label>
+
+            <input id="password"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required>
+
+            <button type="submit">
+                Log In
+            </button>
+
+        </form>
+
+        <p class="auth-switch">
+            No account yet?
+            <a href="/register">
+                Create one
+            </a>
+        </p>
+
+    </section>
+
+    {% if error %}
+    <dialog id="login-error-dialog"
+    class="auth-error-dialog"
+    aria-labelledby="login-error-title">
+
+        <div class="auth-error-dialog-inner">
+
+            <h2 id="login-error-title" class="auth-error-title">
+                {% if error == 'invalid_password' %}
+                    Incorrect password
+                {% elif error == 'user_not_found' %}
+                    Account not found
+                {% else %}
+                    Login failed
+                {% endif %}
+            </h2>
+
+            <p class="auth-error-message">
+                {% if error == 'invalid_password' %}
+                    The password you entered does not match this username.
+                    Please try again.
+                {% elif error == 'user_not_found' %}
+                    No account exists for that username.
+                    Check the spelling or register a new account.
+                {% else %}
+                    Something went wrong. Please try again.
+                {% endif %}
+            </p>
+
+            <button type="button"
+            class="auth-error-dismiss"
+            data-close-dialog>
+                OK
+            </button>
+
+        </div>
+
+    </dialog>
+    {% endif %}
+
+</main>
+
+{% if error %}
+<script>
+(function () {
+    var dialog = document.getElementById('login-error-dialog');
+    if (!dialog) return;
+    dialog.showModal();
+    var closeBtn = dialog.querySelector('[data-close-dialog]');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            dialog.close();
+            if (history.replaceState) {
+                history.replaceState(
+                    null,
+                    '',
+                    '{{ url_for("login_page") }}'
+                );
+            }
+        });
+    }
+    dialog.addEventListener('close', function () {
+        if (history.replaceState && location.search) {
+            history.replaceState(
+                null,
+                '',
+                '{{ url_for("login_page") }}'
+            );
+        }
+    });
+})();
+</script>
+{% endif %}
+
+</body>
+</html>

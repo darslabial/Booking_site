@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Register | Ano, tara?</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="auth-page admin-auth-page">
+
+    <a href="/" class="auth-back">
+        Back
+    </a>
+
+    <section class="form-box auth-card admin-auth-card" aria-labelledby="admin-register-title">
+
+        <p class="auth-kicker">
+            Admin access
+        </p>
+
+        <h1 id="admin-register-title">
+            Create Admin Account
+        </h1>
+
+        <p class="auth-copy">
+            Register a management account to view travelers, bookings, and site activity.
+        </p>
+
+        <form action="{{ url_for('register_admin') }}" method="POST" class="auth-form">
+
+            <label for="admin_username">
+                Admin Username
+            </label>
+
+            <input id="admin_username"
+            type="text"
+            name="admin_username"
+            placeholder="Choose an admin username"
+            autocomplete="username"
+            required>
+
+            <label for="admin_password">
+                Admin Password
+            </label>
+
+            <input id="admin_password"
+            type="password"
+            name="admin_password"
+            placeholder="Create a strong password"
+            autocomplete="new-password"
+            required
+            minlength="6">
+
+            <label for="admin_contact">
+                Contact Number
+            </label>
+
+            <input id="admin_contact"
+            type="tel"
+            name="admin_contact"
+            placeholder="Enter contact number for this admin"
+            autocomplete="tel"
+            required>
+
+            <button type="submit">
+                Register Admin
+            </button>
+
+        </form>
+
+        <p class="auth-switch">
+            Already have an admin account?
+
+            <a href="/admin-login" id="adminLoginLink">
+                Log in
+            </a>
+        </p>
+
+    </section>
+
+</main>
+
+<script>
+    const adminLoginLink = document.getElementById("adminLoginLink");
+
+    if (adminLoginLink) {
+        adminLoginLink.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const targetUrl = adminLoginLink.getAttribute("href");
+
+            if ("speechSynthesis" in window) {
+                const message = new SpeechSynthesisUtterance("Ano ta ra?");
+                message.rate = 1;
+                message.pitch = 1;
+
+                message.onend = function () {
+                    window.location.href = targetUrl;
+                };
+
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(message);
+            } else {
+                window.location.href = targetUrl;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

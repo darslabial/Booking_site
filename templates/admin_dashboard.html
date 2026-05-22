@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Ano, tara?</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="admin-dashboard-page">
+
+    <nav class="navbar dashboard-nav admin-dashboard-nav">
+
+        <a href="/admin-dashboard" class="nav-brand">
+            Admin Dashboard
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="/">
+                Website
+            </a>
+
+            <a href="/logout">
+                Log Out
+            </a>
+
+        </div>
+
+    </nav>
+
+    <section class="admin-dashboard-header">
+
+        <div>
+
+            <p class="dashboard-kicker">
+                Ano, tara? management
+            </p>
+
+            <h1>
+                Admin Dashboard
+            </h1>
+
+            <p>
+                Monitor registered travelers and booking activity across tourist spots.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="admin-stat-grid" aria-label="Admin dashboard totals">
+
+        <article>
+            <span>Total Users</span>
+            <strong>{{ users|length }}</strong>
+        </article>
+
+        <article>
+            <span>Total Bookings</span>
+            <strong>{{ bookings|length }}</strong>
+        </article>
+
+    </section>
+
+    <section class="admin-content-grid">
+
+        <div class="admin-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Registered Users
+                    </h2>
+
+                    <p>
+                        Account names and contact numbers from user registration.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if users %}
+
+            <div class="admin-table-wrap">
+
+                <table class="admin-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Contact Number</th>
+                            <th>Bookings</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for user in users %}
+
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.contact_number }}</td>
+                            <td>{{ user.bookings|length }}</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="admin-empty">
+                No registered users yet.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="admin-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Booking History
+                    </h2>
+
+                    <p>
+                        Visit schedules and accommodation check-ins submitted by travelers.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if bookings %}
+
+            <div class="admin-table-wrap">
+
+                <table class="admin-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Tourist Spot</th>
+                            <th>Visit Schedule</th>
+                            <th>Accommodation</th>
+                            <th>Booked On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for booking in bookings %}
+
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.user.username }}</td>
+                            <td>{{ booking.tourist_spot }}</td>
+                            <td>
+                                {% if booking.desired_date or booking.desired_time %}
+                                    {% if booking.desired_date %}
+                                        {{ booking.desired_date.strftime('%B %d, %Y') }}
+                                    {% endif %}
+                                    {% if booking.desired_time %}
+                                        at {{ booking.desired_time.strftime('%I:%M %p') }}
+                                    {% endif %}
+                                {% else %}
+                                    Not booked
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if booking.accommodation_check_in or booking.accommodation_check_in_time %}
+                                    {% if booking.accommodation_check_in %}
+                                        {{ booking.accommodation_check_in.strftime('%B %d, %Y') }}
+                                    {% endif %}
+                                    {% if booking.accommodation_check_in_time %}
+                                        at {{ booking.accommodation_check_in_time.strftime('%I:%M %p') }}
+                                    {% endif %}
+                                {% else %}
+                                    Not booked
+                                {% endif %}
+                            </td>
+                            <td>{{ booking.booking_date.strftime('%B %d, %Y') }}</td>
+                            <td>
+                                {% set st = (booking.status or 'pending')|lower %}
+                                <span class="booking-status booking-status--{{ st }}">
+                                    {% if st == 'confirmed' %}
+                                        Confirmed
+                                    {% else %}
+                                        Pending
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if (booking.status or 'pending')|lower != 'confirmed' %}
+                                <form action="{{ url_for('admin_confirm_booking', booking_id=booking.id) }}"
+                                method="POST"
+                                class="admin-confirm-form">
+                                    <button type="submit" class="admin-confirm-btn">
+                                        Confirm booking
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="admin-action-done">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="admin-empty">
+                No bookings yet.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+(function () {
+    var scrollKey = "adminDashboardScrollY";
+
+    document.querySelectorAll(".admin-confirm-form").forEach(function (form) {
+        form.addEventListener("submit", function () {
+            sessionStorage.setItem(scrollKey, String(window.scrollY));
+        });
+    });
+
+    function restoreScroll() {
+        var raw = sessionStorage.getItem(scrollKey);
+        if (raw === null) {
+            return;
+        }
+        sessionStorage.removeItem(scrollKey);
+        var y = parseFloat(raw, 10);
+        if (!isNaN(y)) {
+            window.scrollTo(0, y);
+        }
+    }
+
+    window.addEventListener("load", function () {
+        restoreScroll();
+        requestAnimationFrame(restoreScroll);
+    });
+})();
+</script>
+
+</body>
+</html>

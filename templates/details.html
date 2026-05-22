@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if spot %}
+            {{ spot.name }} | Ano, tara?
+        {% else %}
+            Tourist Spot Not Found | Ano, tara?
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+
+<main class="details-page">
+
+    <nav class="navbar dashboard-nav">
+
+        <a href="/dashboard" class="nav-brand">
+            Ano, tara?
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/profile">
+                Profile
+            </a>
+
+            <a href="/logout">
+                Log Out
+            </a>
+
+        </div>
+
+    </nav>
+
+    {% if spot %}
+
+    <section class="details-hero">
+
+        <img src="{{ spot.image }}"
+        alt="{{ spot.name }}">
+
+        <div class="details-overlay">
+
+            <p class="dashboard-kicker">
+                Tourist spot details
+            </p>
+
+            <h1>
+                {{ spot.name }}
+            </h1>
+
+            <p>
+                {{ spot.location }}
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="details-layout">
+
+        <article class="details-box details-info">
+
+            <h2>
+                Information
+            </h2>
+
+            <p>
+                {{ spot.description }}
+            </p>
+
+            <h2>
+                Travel Tips
+            </h2>
+
+            <ul class="travel-tips-list">
+                {% for tip in spot.tips|tips_bullets %}
+                <li>
+                    {{ tip }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h2>
+                Recommendation
+            </h2>
+
+            <p>
+                Travelers seeking diverse experiences should explore destinations that combine natural wonders, cultural heritage, and adventure activities to fully appreciate the richness of each place. Always travel with curiosity and respect for local communities so every visit becomes meaningful and memorable.
+            </p>
+
+        </article>
+
+        <aside class="details-box booking-panel">
+
+            <h2>
+                Book This Spot
+            </h2>
+
+            <p>
+                Book your visit schedule. Add accommodation check-in only if you plan to stay.
+            </p>
+
+            <div class="booking-form">
+
+                <form action="/book/{{ spot.id }}" method="POST" class="booking-section">
+
+                    <h3>
+                        Visit Schedule
+                    </h3>
+
+                    <label for="desired_date">
+                        Desired Date to Visit
+                    </label>
+
+                    <input id="desired_date"
+                    type="date"
+                    name="desired_date"
+                    required>
+
+                    <label for="desired_time">
+                        Desired Time to Visit
+                    </label>
+
+                    <input id="desired_time"
+                    type="time"
+                    name="desired_time"
+                    required>
+
+                    <button type="submit">
+                        Book Now
+                    </button>
+
+                </form>
+
+                <form action="/book/{{ spot.id }}" method="POST" class="booking-section optional-booking-section">
+
+                    <h3>
+                        Accommodation Check-in
+                    </h3>
+
+                    <p>
+                        Optional for long visits.
+                    </p>
+
+                <label for="accommodation_check_in">
+                    Check-in Date
+                </label>
+
+                <input id="accommodation_check_in"
+                type="date"
+                name="accommodation_check_in"
+                required>
+
+                <label for="accommodation_check_in_time">
+                    Check-in Time
+                </label>
+
+                <input id="accommodation_check_in_time"
+                type="time"
+                name="accommodation_check_in_time"
+                required>
+
+                    <button type="submit">
+                        Book Now
+                    </button>
+
+                </form>
+
+            </div>
+
+            <a href="/dashboard" class="back-link">
+                Back to Dashboard
+            </a>
+
+        </aside>
+
+    </section>
+
+    {% else %}
+
+    <section class="details-missing">
+
+        <h1>
+            Tourist Spot Not Found
+        </h1>
+
+        <p>
+            The destination you opened does not exist in the current tourist spot list.
+        </p>
+
+        <a href="/dashboard" class="card-action">
+            Back to Dashboard
+        </a>
+
+    </section>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Ano, Tara?</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+
+<main class="dashboard-page">
+
+    <nav class="navbar dashboard-nav">
+
+        <a href="/dashboard" class="nav-brand">
+            Ano, Tara?
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="/profile">
+                Profile
+            </a>
+
+            <a href="/logout">
+                Log Out
+            </a>
+
+        </div>
+
+    </nav>
+
+    <section class="dashboard-hero">
+
+        <div>
+
+            <p class="dashboard-kicker">
+                Tourist spots
+            </p>
+
+            <h1>
+                Explore Surigao del Sur
+            </h1>
+
+            <p>
+                Browse destinations from beaches and waterfalls to caves, springs, and islands.
+            </p>
+
+        </div>
+
+        <div class="spot-count">
+            {{ tourist_spots|length }}
+            <span>spots</span>
+        </div>
+
+    </section>
+
+    <section class="search-box dashboard-search" aria-label="Search tourist spots">
+
+        <input id="spotSearch"
+        type="search"
+        placeholder="Search by name, location, or description"
+        autocomplete="off">
+
+    </section>
+
+    <section class="cards dashboard-cards" id="spotCards">
+
+        {% for spot in tourist_spots %}
+
+        <article class="card tourist-card"
+        data-search="{{ spot.name }} {{ spot.location }} {{ spot.description }}">
+
+            <img src="{{ spot.image }}"
+            alt="{{ spot.name }}">
+
+            <div class="card-content">
+
+                <p class="spot-location">
+                    {{ spot.location }}
+                </p>
+
+                <h2>
+                    {{ spot.name }}
+                </h2>
+
+                <p class="spot-description">
+                    {{ spot.description }}
+                </p>
+
+            </div>
+
+            <a href="/details/{{ spot.id }}" class="card-action">
+                View Details
+            </a>
+
+        </article>
+
+        {% endfor %}
+
+    </section>
+
+</main>
+
+<script>
+    const searchInput = document.getElementById("spotSearch");
+    const cards = document.querySelectorAll(".tourist-card");
+
+    searchInput.addEventListener("input", function(){
+        const keyword = searchInput.value.toLowerCase().trim();
+
+        cards.forEach(function(card){
+            const searchableText = card.dataset.search.toLowerCase();
+            card.style.display = searchableText.includes(keyword) ? "" : "none";
+        });
+    });
+</script>
+
+</body>
+</html>

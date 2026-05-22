@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ano, tara? | Surigao del Sur Tourist Booking</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="welcome-page">
+
+    <header class="welcome-nav">
+
+        <a href="/" class="welcome-brand">
+            Ano, tara?
+        </a>
+
+        <a href="/admin-login" class="admin-btn">
+            Admin
+        </a>
+
+    </header>
+
+    <section class="welcome-hero" aria-labelledby="welcome-title">
+
+        <p class="welcome-kicker">
+            Surigao del Sur travel booking
+        </p>
+
+        <h1 id="welcome-title">
+            Ano, tara?
+        </h1>
+
+        <p class="welcome-copy">
+            Discover beaches, waterfalls, caves, and cold springs. Create an account to book your next destination and keep your trips organized.
+        </p>
+
+        <div class="button-row welcome-actions">
+
+            <a href="/login" class="choice-btn primary-choice">
+                Log In
+            </a>
+
+            <a href="/register" class="choice-btn secondary-choice">
+                Register
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="welcome-preview" aria-label="Featured destinations">
+
+        <article>
+            <strong>Britania Islands</strong>
+            <span>Island hopping</span>
+        </article>
+
+        <article>
+            <strong>Tinuy-an Falls</strong>
+            <span>Waterfall trip</span>
+        </article>
+
+        <article>
+            <strong>Enchanted River</strong>
+            <span>Clear blue river</span>
+        </article>
+
+    </section>
+
+</main>
+
+</body>
+</html>

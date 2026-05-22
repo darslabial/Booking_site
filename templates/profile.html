@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | Ano, tara?</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+
+<main class="profile-page">
+
+    <nav class="navbar dashboard-nav">
+
+        <a href="/dashboard" class="nav-brand">
+            Ano, tara?
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/logout">
+                Log Out
+            </a>
+
+        </div>
+
+    </nav>
+
+    <section class="profile-header">
+
+        <div>
+
+            <p class="dashboard-kicker">
+                Traveler profile
+            </p>
+
+            <h1>
+                Ikaw ba to, {{ user.username }}?
+            </h1>
+
+            <p>
+                Manage your account details and review your booked tourist spots.
+            </p>
+
+        </div>
+
+        <div class="booking-count">
+            {{ bookings|length }}
+            <span>bookings</span>
+        </div>
+
+    </section>
+
+    <section class="profile-grid">
+
+        <div class="profile-box account-panel">
+
+            <div class="account-heading">
+
+                <div class="account-avatar" aria-hidden="true">
+                    {% if user.profile_picture %}
+                        <img src="{{ url_for('static', filename=user.profile_picture) }}"
+                        alt="">
+                    {% else %}
+                        {{ user.username[:1]|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+
+                    <h2>
+                        Account Details
+                    </h2>
+
+                    <p>
+                        Update the information used for your tourist spot bookings.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="account-summary">
+
+                <div>
+                    <span>Username</span>
+                    <strong>{{ user.username }}</strong>
+                </div>
+
+                <div>
+                    <span>Contact Number</span>
+                    <strong>{{ user.contact_number }}</strong>
+                </div>
+
+            </div>
+
+            <div class="account-button-row">
+
+                <button type="button" class="edit-info-btn" id="editInfoButton">
+                    Edit Information
+                </button>
+
+                <form action="/delete-account" method="POST" class="delete-form needs-confirmation">
+
+                    <button type="submit" class="danger-btn">
+                        Delete Account
+                    </button>
+
+                </form>
+
+            </div>
+
+            <form action="/edit-profile" method="POST" enctype="multipart/form-data" class="profile-form profile-form-hidden" id="accountEditForm">
+
+                <label for="profile_picture">
+                    Profile Picture
+                </label>
+
+                <input id="profile_picture"
+                type="file"
+                name="profile_picture"
+                accept="image/png, image/jpeg, image/gif, image/webp">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input id="username"
+                type="text"
+                name="username"
+                value="{{ user.username }}"
+                required>
+
+                <label for="contact_number">
+                    Contact Number
+                </label>
+
+                <input id="contact_number"
+                type="tel"
+                name="contact_number"
+                value="{{ user.contact_number }}"
+                required>
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="profile-box bookings-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Booking History
+                    </h2>
+
+                    <p>
+                        Each booking shows whether it is still pending admin approval or already confirmed. You can edit your visit schedule or cancel bookings you no longer need.
+                    </p>
+
+                </div>
+
+                <a href="/dashboard">
+                    Add Booking
+                </a>
+
+            </div>
+
+            {% if bookings %}
+
+            <div class="booking-list">
+
+                {% for booking in bookings %}
+
+                <article class="booking-item">
+
+                    <div class="booking-summary-row">
+
+                        <div class="booking-summary">
+
+                            <strong>
+                                {{ booking.tourist_spot }}
+                            </strong>
+
+                            <span>
+                                Booked on {{ booking.booking_date.strftime('%B %d, %Y') }}
+                            </span>
+
+                            {% set st = (booking.status or 'pending')|lower %}
+                            <span class="booking-status booking-status--{{ st }}" aria-label="Booking status">
+                                {% if st == 'confirmed' %}
+                                    Confirmed
+                                {% else %}
+                                    Pending approval
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="booking-button-row">
+
+                        <button type="button" class="edit-booking-btn" data-booking-id="{{ booking.id }}">
+                            Edit Booking
+                        </button>
+
+                        <form action="/delete-booking/{{ booking.id }}" method="POST" class="booking-delete-form needs-confirmation">
+
+                            <button type="submit">
+                                Cancel Booking
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <form action="/edit-booking/{{ booking.id }}" method="POST" class="booking-edit-form booking-edit-hidden" id="bookingEditForm{{ booking.id }}">
+
+                        {% if booking.desired_date or booking.desired_time %}
+
+                        <div class="booking-field">
+
+                            <label for="desired_date_{{ booking.id }}">
+                                Desired Date
+                            </label>
+
+                            <input id="desired_date_{{ booking.id }}"
+                            type="date"
+                            name="desired_date"
+                            value="{% if booking.desired_date %}{{ booking.desired_date.strftime('%Y-%m-%d') }}{% endif %}">
+
+                        </div>
+
+                        <div class="booking-field">
+
+                            <label for="desired_time_{{ booking.id }}">
+                                Desired Time
+                            </label>
+
+                            <input id="desired_time_{{ booking.id }}"
+                            type="time"
+                            name="desired_time"
+                            value="{% if booking.desired_time %}{{ booking.desired_time.strftime('%H:%M') }}{% endif %}">
+
+                        </div>
+
+                        {% endif %}
+
+                        {% if booking.accommodation_check_in or booking.accommodation_check_in_time %}
+
+                        <div class="booking-field">
+
+                            <label for="accommodation_check_in_{{ booking.id }}">
+                                Accommodation Check-in Date
+                            </label>
+
+                            <input id="accommodation_check_in_{{ booking.id }}"
+                            type="date"
+                            name="accommodation_check_in"
+                            value="{% if booking.accommodation_check_in %}{{ booking.accommodation_check_in.strftime('%Y-%m-%d') }}{% endif %}">
+
+                        </div>
+
+                        <div class="booking-field">
+
+                            <label for="accommodation_check_in_time_{{ booking.id }}">
+                                Accommodation Check-in Time
+                            </label>
+
+                            <input id="accommodation_check_in_time_{{ booking.id }}"
+                            type="time"
+                            name="accommodation_check_in_time"
+                            value="{% if booking.accommodation_check_in_time %}{{ booking.accommodation_check_in_time.strftime('%H:%M') }}{% endif %}">
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="booking-actions">
+
+                            <button type="submit">
+                                Update Booking
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-bookings">
+
+                <h3>
+                    No bookings yet
+                </h3>
+
+                <p>
+                    Choose a tourist spot from the dashboard to start planning your trip.
+                </p>
+
+                <a href="/dashboard" class="card-action">
+                    Explore Tourist Spots
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</main>
+
+<div class="confirm-modal" id="confirmModal" aria-hidden="true">
+
+    <div class="confirm-box" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+
+        <h2 id="confirmTitle">
+            Sure ka naba?
+        </h2>
+
+        <div class="confirm-actions">
+
+            <button type="button" class="confirm-yes" id="confirmYes">
+                Sure na!
+            </button>
+
+            <button type="button" class="confirm-no" id="confirmNo">
+                Wag na lang
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const editInfoButton = document.getElementById("editInfoButton");
+    const accountEditForm = document.getElementById("accountEditForm");
+    const confirmModal = document.getElementById("confirmModal");
+    const confirmYes = document.getElementById("confirmYes");
+    const confirmNo = document.getElementById("confirmNo");
+    let formToSubmit = null;
+
+    editInfoButton.addEventListener("click", function(){
+        accountEditForm.classList.toggle("profile-form-hidden");
+        editInfoButton.textContent = accountEditForm.classList.contains("profile-form-hidden")
+            ? "Edit Information"
+            : "Hide Edit Form";
+    });
+
+    document.querySelectorAll(".edit-booking-btn").forEach(function(button){
+        button.addEventListener("click", function(){
+            const bookingId = button.dataset.bookingId;
+            const bookingForm = document.getElementById("bookingEditForm" + bookingId);
+
+            bookingForm.classList.toggle("booking-edit-hidden");
+            button.textContent = bookingForm.classList.contains("booking-edit-hidden")
+                ? "Edit Booking"
+                : "Hide Edit Booking";
+        });
+    });
+
+    document.querySelectorAll(".needs-confirmation").forEach(function(form){
+        form.addEventListener("submit", function(event){
+            event.preventDefault();
+            formToSubmit = form;
+            confirmModal.classList.add("confirm-modal-open");
+            confirmModal.setAttribute("aria-hidden", "false");
+        });
+    });
+
+    confirmYes.addEventListener("click", function(){
+        if(formToSubmit){
+            formToSubmit.submit();
+        }
+    });
+
+    confirmNo.addEventListener("click", function(){
+        formToSubmit = null;
+        confirmModal.classList.remove("confirm-modal-open");
+        confirmModal.setAttribute("aria-hidden", "true");
+    });
+</script>
+
+</body>
+</html>

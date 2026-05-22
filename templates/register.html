@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | Ready ka na?</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main class="auth-page">
+
+    <a href="/" class="auth-back">
+        Back
+    </a>
+
+    <section class="form-box auth-card" aria-labelledby="register-title">
+
+        <p class="auth-kicker">
+            Start your trip
+        </p>
+
+        <h1 id="register-title">
+            Create Account
+        </h1>
+
+        <p class="auth-copy">
+            Sign up to save your bookings and explore Surigao del Sur destinations.
+        </p>
+
+        <form action="/register-user" method="POST" class="auth-form">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input id="username"
+            type="text"
+            name="username"
+            placeholder="Choose a username"
+            autocomplete="username"
+            required>
+
+            <label for="password">
+                Password
+            </label>
+
+            <input id="password"
+            type="password"
+            name="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required>
+
+            <label for="contact_number">
+                Contact Number
+            </label>
+
+            <input id="contact_number"
+            type="tel"
+            name="contact_number"
+            placeholder="Enter your contact number"
+            autocomplete="tel"
+            required>
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+        <p class="auth-switch">
+            Already have an account?
+            <a href="/login">
+                Log in
+            </a>
+        </p>
+
+    </section>
+
+</main>
+
+</body>
+</html>
